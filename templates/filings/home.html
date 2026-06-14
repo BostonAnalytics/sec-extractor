@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Find a Filing{% endblock %}
+
+{% block content %}
+<section class="workspace">
+  <div>
+    <h1>Find a 10-K filing</h1>
+    <form method="get" class="form">
+      {{ form.as_p }}
+      <button type="submit">Search SEC</button>
+    </form>
+  </div>
+  <aside>
+    <h2>Recent filings</h2>
+    {% for filing in recent_filings %}
+      <a class="row-link" href="{{ filing.get_absolute_url }}">
+        <strong>{{ filing.company.ticker|default:filing.company.name }}</strong>
+        <span>{{ filing.form_type }} filed {{ filing.filing_date }}</span>
+      </a>
+    {% empty %}
+      <p>No filings have been downloaded yet.</p>
+    {% endfor %}
+  </aside>
+</section>
+{% endblock %}

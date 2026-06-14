@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Select Filing{% endblock %}
+
+{% block content %}
+<section>
+  <h1>Select a filing</h1>
+  <p class="meta">{{ company.name }} · {{ search.year }} {{ search.year_mode }} year</p>
+  <div class="pills">
+    {% for label in selected_item_labels %}
+      <span>{{ label }}</span>
+    {% endfor %}
+  </div>
+  <form method="post" class="list-form">
+    {% csrf_token %}
+    {% for index, candidate in candidates %}
+      <label class="choice-row">
+        <input type="radio" name="candidate_index" value="{{ index }}" {% if forloop.first %}checked{% endif %}>
+        <span>
+          <strong>{{ candidate.form_type }}</strong>
+          filed {{ candidate.filing_date }}{% if candidate.report_date %}, period {{ candidate.report_date }}{% endif %}
+          · {{ candidate.accession_number }}
+        </span>
+      </label>
+    {% empty %}
+      <p>No matching 10-K filing was found for that company and year.</p>
+    {% endfor %}
+    {% if candidates %}
+      <button type="submit">Download and extract selected items</button>
+    {% endif %}
+  </form>
+</section>
+{% endblock %}

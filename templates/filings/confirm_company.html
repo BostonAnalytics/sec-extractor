@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Company{% endblock %}
+
+{% block content %}
+<section>
+  <h1>Confirm the company</h1>
+  <p class="meta">Year: {{ search.year }} using {{ search.year_mode }} year</p>
+  <div class="pills">
+    {% for label in selected_item_labels %}
+      <span>{{ label }}</span>
+    {% endfor %}
+  </div>
+  <form method="post" class="list-form">
+    {% csrf_token %}
+    {% for index, candidate in candidates %}
+      <label class="choice-row">
+        <input type="radio" name="candidate_index" value="{{ index }}" {% if forloop.first %}checked{% endif %}>
+        <span>
+          <strong>{{ candidate.ticker|default:"No ticker" }}</strong>
+          {{ candidate.name }} · CIK {{ candidate.padded_cik }} · {{ candidate.exchange }}
+        </span>
+      </label>
+    {% endfor %}
+    <button type="submit">Use company</button>
+  </form>
+</section>
+{% endblock %}

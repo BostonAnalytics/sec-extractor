@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Filing Chat{% endblock %}
+
+{% block content %}
+<section class="filing-header">
+  <div>
+    <h1>{{ filing.company.ticker|default:filing.company.name }} filing chat</h1>
+    <p class="meta">{{ filing.form_type }} filed {{ filing.filing_date }}</p>
+  </div>
+  <a class="button-link" href="{{ filing.get_absolute_url }}">Back to filing</a>
+</section>
+
+<section class="chat-log">
+  {% for message in messages %}
+    <article class="chat-message {{ message.role }}">
+      <strong>{{ message.get_role_display }}</strong>
+      <p>{{ message.message }}</p>
+      {% if message.citations %}
+        <ul>
+          {% for citation in message.citations %}
+            <li>Item {{ citation.item_code }}. {{ citation.title }}: {{ citation.snippet|truncatewords:45 }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </article>
+  {% empty %}
+    <p>No questions yet.</p>
+  {% endfor %}
+</section>
+
+<form method="post" class="form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Ask</button>
+</form>
+{% endblock %}

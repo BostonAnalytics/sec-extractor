@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ filing.company.ticker }} Filing{% endblock %}
+
+{% block content %}
+<section class="filing-header">
+  <div>
+    <h1>{{ filing.company.name }}</h1>
+    <p class="meta">{{ filing.form_type }} filed {{ filing.filing_date }} · {{ filing.accession_number }}</p>
+  </div>
+  <a class="button-link" href="{% url 'chat:filing_chat' filing.id %}">Open chat</a>
+</section>
+
+{% if filing.error_message %}
+  <p class="message warning">{{ filing.error_message }}</p>
+{% endif %}
+
+<section>
+  <h2>Extracted items</h2>
+  {% for item in filing.items.all %}
+    <article class="item">
+      <h3>Item {{ item.item_code }}. {{ item.title }}</h3>
+      {% if item.warnings %}<p class="meta">{{ item.warnings }}</p>{% endif %}
+      <p>{{ item.extracted_text|truncatewords:120 }}</p>
+    </article>
+  {% empty %}
+    <p>No SEC items have been extracted for this filing.</p>
+  {% endfor %}
+</section>
+{% endblock %}
